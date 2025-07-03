@@ -1,0 +1,1034 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Who Wants to Be a Sunrise Layer 1 Millionaire?</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #FFD700, #FFA500, #FF6347); /* Sunrise gradient */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+            color: #333;
+        }
+        .game-container {
+            background-color: #FFFFFF; /* Changed to solid white for full opacity */
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            padding: 30px;
+            max-width: 900px;
+            width: 100%;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        .header {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #FF6347;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+            line-height: 1.2; /* Adjust line height for two lines */
+        }
+        .question-card {
+            background-color: #f0f9ff; /* Light blue for data block */
+            border: 2px solid #63b3ed; /* Blue border */
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.05);
+            min-height: 150px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+        }
+        .question-text {
+            font-size: 1.6rem;
+            font-weight: 600;
+            color: #2c5282;
+            line-height: 1.4;
+        }
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        @media (min-width: 768px) {
+            .options-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        .option-button {
+            background-color: #4299e1; /* Blue */
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: left;
+            display: flex;
+            align-items: center;
+        }
+        .option-button:hover:not(.disabled) {
+            background-color: #3182ce;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        .option-button.selected {
+            background-color: #ed8936; /* Orange for selected */
+        }
+        .option-button.correct {
+            background-color: #48bb78; /* Green for correct */
+            animation: pulse-green 0.8s infinite alternate;
+        }
+        .option-button.incorrect {
+            background-color: #f56565; /* Red for incorrect */
+            animation: shake 0.5s;
+        }
+        .option-button.disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            background-color: #a0aec0; /* Gray for disabled */
+        }
+        .option-button span {
+            margin-right: 10px;
+            font-weight: 700;
+        }
+
+        .lifeline-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        .lifeline-button {
+            background-color: #ecc94b; /* Yellow */
+            color: #333;
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .lifeline-button:hover:not(.disabled) {
+            background-color: #d69e2e;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        .lifeline-button.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background-color: #a0aec0;
+        }
+
+        .game-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #2c5282;
+            padding: 10px 0;
+            border-bottom: 2px solid #edf2f7;
+        }
+        .game-info span {
+            background-color: #bee3f8;
+            padding: 8px 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            background-color: #e2e8f0;
+            border-radius: 10px;
+            height: 15px;
+            margin-top: 20px;
+            overflow: hidden;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #fbd38d, #f6ad55, #ed8936); /* Sunrise gradient for progress */
+            border-radius: 10px;
+            transition: width 0.5s ease-in-out;
+        }
+
+        .message-box {
+            background-color: #fff;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%;
+            max-width: 550px;
+            z-index: 1000;
+            display: none; /* Hidden by default */
+            flex-direction: column;
+            gap: 20px;
+            text-align: center;
+            border: 2px solid #ed8936;
+        }
+        .message-box.active {
+            display: flex;
+        }
+        .message-box h3 {
+            font-size: 1.8rem;
+            color: #ed8936;
+            margin-bottom: 10px;
+        }
+        .message-box p {
+            font-size: 1.1rem;
+            color: #4a5568;
+            line-height: 1.5;
+            white-space: pre-wrap; /* Ensures newlines are respected and text wraps */
+            overflow-y: auto; /* Adds scroll if content is too long */
+            max-height: 250px; /* Increased max-height for content */
+            min-height: 50px; /* Ensure a minimum height */
+            margin-bottom: 15px; /* Space between content and button */
+            text-align: left; /* Align text to the left for better readability */
+            padding: 0 10px; /* Add some horizontal padding inside the message content */
+        }
+        .message-box button {
+            background-color: #ed8936;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .message-box button:hover {
+            background-color: #dd6b20;
+        }
+
+        /* Game Over/Win Screen (New Independent Container) */
+        .game-end-screen {
+            background-color: rgba(255, 255, 255, 0.98);
+            border-radius: 20px;
+            padding: 40px; /* Generous padding */
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            display: none; /* Hidden by default */
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+            box-sizing: border-box;
+            
+            /* Full viewport overlay properties */
+            position: fixed; /* Use fixed positioning */
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            max-width: none; /* Remove max-width from the container itself */
+            min-height: 100vh; /* Ensure it covers full height */
+            
+            /* Center content within the overlay */
+            display: flex; /* Ensure flex is active when visible */
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow-y: auto; /* Allow scrolling if content is very tall */
+        }
+        .game-end-screen.active {
+            display: flex;
+        }
+        /* Wrapper for text content to apply max-width and center its text */
+        .end-screen-content-wrapper {
+            max-width: 600px; /* Max width for the text block */
+            width: 90%; /* Fluid width for the text block */
+            text-align: center; /* Center the text within this wrapper */
+        }
+        .game-end-screen h2 {
+            font-size: 2.5rem; /* Restored larger font size */
+            font-weight: 700;
+            color: #FF6347;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.1);
+            word-break: break-word; 
+            line-height: 1.2;
+            margin-bottom: 20px; /* Consistent spacing */
+            text-align: center; /* Explicitly center text */
+        }
+        .game-end-screen p {
+            font-size: 1.5rem; /* Restored larger font size */
+            color: #2c5282;
+            line-height: 1.6; 
+            word-break: break-word;
+            margin-bottom: 20px; /* Consistent spacing */
+            text-align: center; /* Explicitly center text */
+        }
+        .game-end-screen .final-winnings {
+            font-size: 2.5rem; /* Restored larger font size */
+            font-weight: 700;
+            color: #48bb78;
+            margin-top: 20px; /* Spacing from message */
+            margin-bottom: 30px; /* Spacing before buttons */
+            word-break: break-word;
+            text-align: center; /* Explicitly center text */
+        }
+        .game-end-screen button {
+            background-color: #4299e1;
+            color: white;
+            padding: 15px 30px; /* Restored larger padding */
+            border-radius: 10px;
+            font-size: 1.2rem; /* Restored larger font size */
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-top: 15px; /* Increased spacing between buttons */
+            width: 80%; /* Adjusted width */
+            max-width: 350px; /* Increased max width for buttons */
+        }
+        .game-end-screen button:hover {
+            background-color: #3182ce;
+            transform: translateY(-2px);
+        }
+
+        /* Haru Mascot */
+        .haru-mascot {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            animation: bounce 2s infinite;
+            width: 100px; /* Default width for the image */
+            height: 100px; /* Default height for the image */
+        }
+        .haru-mascot img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain; /* Ensures the image fits within the div without distortion */
+        }
+
+        /* New Left Mascot */
+        .left-mascot {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            animation: bounce 2s infinite; /* Apply same bounce animation */
+            width: 70px; /* Downsized by 30% from 100px */
+            height: 70px; /* Downsized by 30% from 100px */
+        }
+        .left-mascot img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        @media (max-width: 768px) {
+            .haru-mascot {
+                width: 70px; /* Smaller size for mobile */
+                height: 70px;
+                bottom: 10px;
+                right: 10px;
+            }
+            .left-mascot {
+                width: 50px; /* Downsized by 30% from 70px for mobile */
+                height: 50px;
+                bottom: 10px;
+                left: 10px; /* Keep left position */
+            }
+            .game-end-screen h2 {
+                font-size: 2rem; 
+            }
+            .game-end-screen p {
+                font-size: 1.2rem;
+            }
+            .game-end-screen .final-winnings {
+                font-size: 2rem;
+            }
+            .game-end-screen button {
+                font-size: 1.1rem;
+                padding: 12px 25px;
+            }
+        }
+
+        /* Animations */
+        @keyframes pulse-green {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(72, 187, 120, 0.7); }
+            70% { transform: 1.02; box-shadow: 0 0 0 10px rgba(72, 187, 120, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(72, 187, 120, 0); }
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .fade-in {
+            animation: fadeIn 1s ease-out;
+        }
+    </style>
+</head>
+<body class="antialiased">
+    <div id="gameContainer" class="game-container">
+        <h1 class="header">Who Wants to Be a<br>Sunrise Layer 1 Millionaire?</h1>
+
+        <!-- Welcome Screen -->
+        <div id="welcomeScreen" class="fade-in">
+            <p class="text-xl text-gray-700 mb-6">Welcome, aspiring blockchain architect, to 'Who Wants to Be a Sunrise Layer 1 Millionaire!' Today, we test your knowledge of the future of decentralized networks, powered by the innovative Sunrise Layer. Prepare to build your fortune, one block at a time, and illuminate the path to Interliquid success!</p>
+            <button id="startButton" class="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-lg shadow-lg transition duration-300">Start Game</button>
+        </div>
+
+        <!-- Game Play Screen -->
+        <div id="gamePlayScreen" class="hidden">
+            <div class="game-info">
+                <span id="currentQuestionNumber">Question 1</span>
+                <span id="currentWinnings">FAKE $RISE: 0</span>
+            </div>
+
+            <div class="question-card">
+                <p id="questionText" class="question-text">Loading question...</p>
+                <!-- Left Mascot -->
+                <div class="left-mascot" id="leftMascot">
+                    <img src="https://github.com/ShrimpieDev/derine/blob/main/Untitled%20design%20(59).png?raw=true" alt="Left Mascot">
+                </div>
+                <!-- Haru Mascot -->
+                <div class="haru-mascot" id="haruMascot">
+                    <img src="https://github.com/ShrimpieDev/derine/blob/main/Untitled%20design%20(57).png?raw=true" alt="Haru Mascot">
+                </div>
+            </div>
+
+            <div id="optionsGrid" class="options-grid">
+                <button class="option-button" data-option="A"><span>A:</span> Option A</button>
+                <button class="option-button" data-option="B"><span>B:</span> Option B</button>
+                <button class="option-button" data-option="C"><span>C:</span> Option C</button>
+                <button class="option-button" data-option="D"><span>D:</span> Option D</button>
+            </div>
+
+            <div class="lifeline-buttons">
+                <button id="lifeline5050" class="lifeline-button" data-lifeline="50:50">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-percent"><line x1="19" x2="5" y1="5" y2="19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg>
+                    50:50 (Erasure Code Assist)
+                </button>
+                <button id="lifelineAudience" class="lifeline-button" data-lifeline="Audience">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    Ask the Audience (Sunrise Community)
+                </button>
+                <button id="lifelinePhone" class="lifeline-button" data-lifeline="Phone">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-phone"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.65A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                    Phone a Friend (Core Contributor)
+                </button>
+            </div>
+
+            <div class="progress-bar-container">
+                <div id="progressBar" class="progress-bar"></div>
+            </div>
+        </div>
+
+        <!-- Message Box (for lifelines, correct/incorrect feedback) -->
+        <div id="messageBox" class="message-box">
+            <h3 id="messageTitle"></h3>
+            <p id="messageContent"></p>
+            <button id="messageBoxCloseButton">Got It!</button>
+        </div>
+
+        <!-- Game End Screen -->
+        <div id="gameEndScreen" class="game-end-screen">
+            <div class="end-screen-content-wrapper"> <!-- New wrapper for internal content -->
+                <h2 id="endScreenTitle"></h2>
+                <p id="endScreenMessage"></p>
+                <p id="finalWinnings" class="final-winnings"></p>
+                <button id="playAgainButton">Play Again</button>
+                <button id="shareTwitterButton" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-lg shadow-lg transition duration-300">
+                    Share on Twitter
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Game Elements
+        const gameContainer = document.getElementById('gameContainer');
+        const welcomeScreen = document.getElementById('welcomeScreen');
+        const gamePlayScreen = document.getElementById('gamePlayScreen');
+        const startButton = document.getElementById('startButton');
+        const questionText = document.getElementById('questionText');
+        const optionsGrid = document.getElementById('optionsGrid');
+        const optionButtons = document.querySelectorAll('.option-button');
+        const currentQuestionNumberSpan = document.getElementById('currentQuestionNumber');
+        const currentWinningsSpan = document.getElementById('currentWinnings');
+        const lifeline5050Button = document.getElementById('lifeline5050');
+        const lifelineAudienceButton = document.getElementById('lifelineAudience');
+        const lifelinePhoneButton = document.getElementById('lifelinePhone');
+        const progressBar = document.getElementById('progressBar');
+        const haruMascot = document.getElementById('haruMascot');
+        const leftMascot = document.getElementById('leftMascot'); // New: Left mascot element
+
+        const messageBox = document.getElementById('messageBox');
+        const messageTitle = document.getElementById('messageTitle');
+        const messageContent = document.getElementById('messageContent');
+        const messageBoxCloseButton = document.getElementById('messageBoxCloseButton');
+
+        const gameEndScreen = document.getElementById('gameEndScreen');
+        const endScreenTitle = document.getElementById('endScreenTitle');
+        const endScreenMessage = document.getElementById('endScreenMessage');
+        const finalWinningsSpan = document.getElementById('finalWinnings');
+        const playAgainButton = document.getElementById('playAgainButton');
+        const shareTwitterButton = document.getElementById('shareTwitterButton'); // Twitter share button
+
+        // Game State Variables
+        let currentQuestionIndex = 0;
+        let currentWinnings = 0;
+        let lifelines = {
+            '50:50': true,
+            'Audience': true,
+            'Phone': true
+        };
+        let gameActive = false;
+        let selectedOption = null;
+        let lastSafeHavenWinnings = 0; // Track winnings at the last safe haven
+
+        // Game Data: Questions and Prize Ladder (Truncated to 8 questions)
+        const questions = [
+            {
+                question: "What is the primary purpose of Sunrise Layer in the modular blockchain ecosystem?",
+                options: {
+                    A: "To serve as a new Layer 1 blockchain for general-purpose dApps.",
+                    B: "To provide a highly scalable, gasless, and modular Data Availability (DA) layer.",
+                    C: "To function as a decentralized exchange (DEX) for cross-chain swaps.",
+                    D: "To create a new consensus mechanism for Proof of Work (PoW) networks."
+                },
+                answer: "B",
+                prize: 5, // Adjusted prize
+                safeHaven: false,
+                hint: {
+                    technical: "Sunrise Layer focuses on Data Availability to enable scalable Layer 2s, emphasizing gasless transactions and modularity.",
+                    business: "Our core strategy is to empower other blockchains with efficient data handling, making it easier for them to scale without high transaction costs."
+                }
+            },
+            {
+                question: "Which term describes Sunrise Layer's unique consensus mechanism, designed to incentivize liquidity provision?",
+                options: {
+                    A: "Proof of Stake (PoS)",
+                    B: "Proof of Work (PoW)",
+                    C: "Proof of Liquidity (PoL)",
+                    D: "Proof of Authority (PoA)"
+                },
+                answer: "C",
+                prize: 10, // Adjusted prize
+                safeHaven: false,
+                hint: {
+                    technical: "The mechanism is designed to directly reward participants who contribute to the network's liquidity, ensuring robust data availability.",
+                    business: "Our economic model is built around incentivizing active participation in the network's financial health, which is crucial for its stability and growth."
+                }
+            },
+            {
+                question: "What is the main benefit of Sunrise Layer's 'gasless' transaction model for users and developers?",
+                options: {
+                    A: "It allows transactions to be processed instantly without any block confirmation.",
+                    B: "It eliminates the need for users to pay transaction fees in native cryptocurrency.",
+                    C: "To enable direct peer-to-peer transactions without involving the blockchain.",
+                    D: "It provides a private network where transactions are not publicly visible."
+                },
+                answer: "B",
+                prize: 20, // Adjusted prize
+                safeHaven: false,
+                hint: {
+                    technical: "The gasless model significantly reduces the barrier to entry for users and simplifies the development experience by abstracting away transaction costs.",
+                    business: "From a user adoption and enterprise integration perspective, removing gas fees is a critical step towards making blockchain technology more accessible and user-friendly."
+                }
+            },
+            {
+                question: "Sunrise Layer aims to be a foundational component for what type of blockchain architecture?",
+                options: {
+                    A: "Monolithic blockchains",
+                    B: "Sidechains",
+                    C: "Modular blockchains",
+                    D: "Centralized ledgers"
+                },
+                answer: "C",
+                prize: 30, // Adjusted prize
+                safeHaven: false,
+                hint: {
+                    technical: "Our design philosophy is to specialize in one core function (Data Availability) to allow other layers to focus on execution and settlement, forming a composable stack.",
+                    business: "Our vision is to enable a future where different blockchain components can be mixed and matched, providing flexibility and scalability for various applications."
+                }
+            },
+            {
+                question: "What is the name of Sunrise Layer's sister project, which functions as a strategic yield hub within the ecosystem?",
+                options: {
+                    A: "Moonbeam",
+                    B: "Gluon",
+                    C: "Polygon",
+                    D: "Avalanche"
+                },
+                answer: "B",
+                prize: 60, // Adjusted prize
+                safeHaven: true, // First Safe Haven
+                milestone: "Liquidity Flywheel",
+                hint: {
+                    technical: "This sister project is designed to enhance the economic incentives and utility within the Sunrise ecosystem, particularly for liquidity providers.",
+                    business: "It's a key part of our ecosystem strategy to create a robust and interconnected network, offering additional value to our community and partners."
+                }
+            },
+            {
+                question: "Which decentralized storage solutions does Sunrise Layer primarily utilize for storing its off-chain data blobs?",
+                options: {
+                    A: "Google Drive and Dropbox",
+                    B: "AWS S3 and Azure Blob Storage",
+                    C: "IPFS and Arweave",
+                    D: "OneDrive and iCloud"
+                },
+                answer: "C",
+                prize: 120, // Adjusted prize
+                safeHaven: false,
+                hint: {
+                    technical: "For decentralized and persistent storage of large data blobs, we integrate with solutions that offer censorship resistance and data permanence.",
+                    business: "Our choice of storage solutions reflects our commitment to decentralization and ensuring the long-term integrity and availability of data for our network."
+                }
+            },
+            {
+                question: "What is the approximate throughput (data processing speed) that Sunrise Layer claims to achieve, enabling 'big block L2s'?",
+                options: {
+                    A: "0.5 MB/s",
+                    B: "1 MB/s",
+                    C: "5+ MB/s",
+                    D: "100+ MB/s"
+                },
+                answer: "C",
+                prize: 240, // Adjusted prize
+                safeHaven: false,
+                hint: {
+                    technical: "Our architecture is optimized to handle a significant volume of data, allowing for larger block sizes and higher transaction capacity on connected Layer 2s.",
+                    business: "This high throughput is crucial for supporting enterprise-grade applications and ensuring that our network can meet the demands of future blockchain adoption."
+                }
+            },
+            {
+                question: "Yu Kimura, the CEO & CTO of Sunrise, is also known for what significant achievement prior to co-founding Sunrise?",
+                options: {
+                    A: "Developing the first decentralized exchange.",
+                    B: "Recovering $5 million in cryptocurrency assets as a white hat hacker.",
+                    C: "Inventing the concept of modular blockchains.",
+                    D: "Leading a major Layer 2 scaling solution."
+                },
+                answer: "B",
+                prize: 515, // Adjusted prize
+                safeHaven: false,
+                hint: {
+                    technical: "Yu's background includes a notable contribution to blockchain security, demonstrating expertise in protecting digital assets.",
+                    business: "His prior achievement highlights his deep understanding of the blockchain space, particularly in safeguarding digital value, which is vital for building trust in our network."
+                }
+            }
+        ];
+
+        // Event Listeners
+        startButton.addEventListener('click', startGame);
+        optionButtons.forEach(button => {
+            button.addEventListener('click', () => selectOption(button));
+        });
+        lifeline5050Button.addEventListener('click', () => useLifeline('50:50'));
+        lifelineAudienceButton.addEventListener('click', () => useLifeline('Audience'));
+        lifelinePhoneButton.addEventListener('click', () => useLifeline('Phone'));
+        messageBoxCloseButton.addEventListener('click', hideMessageBox);
+        playAgainButton.addEventListener('click', resetGame);
+        shareTwitterButton.addEventListener('click', shareOnTwitter); // Twitter share event listener
+
+        // Functions
+
+        /**
+         * Initializes and starts the game.
+         * Hides the welcome screen and displays the game play screen.
+         * Resets game state and displays the first question.
+         */
+        function startGame() {
+            welcomeScreen.classList.add('hidden');
+            gamePlayScreen.classList.remove('hidden');
+            gamePlayScreen.classList.add('fade-in');
+            gameActive = true;
+            resetGame(); // Ensure a clean start
+            displayQuestion();
+            updateProgress();
+            // Play uplifting intro music (placeholder)
+            // console.log("Playing intro music...");
+        }
+
+        /**
+         * Resets all game state variables to their initial values.
+         * Hides end screens and message boxes.
+         * Re-enables all lifelines.
+         */
+        function resetGame() {
+            currentQuestionIndex = 0;
+            currentWinnings = 0;
+            lastSafeHavenWinnings = 0;
+            lifelines = {
+                '50:50': true,
+                'Audience': true,
+                'Phone': true
+            };
+            gameActive = true;
+            selectedOption = null;
+
+            // Reset UI
+            currentWinningsSpan.textContent = `FAKE $RISE: 0`;
+            lifeline5050Button.classList.remove('disabled');
+            lifelineAudienceButton.classList.remove('disabled');
+            lifelinePhoneButton.classList.remove('disabled');
+            
+            gameEndScreen.classList.remove('active');
+            messageBox.classList.remove('active');
+            gamePlayScreen.classList.remove('hidden');
+            welcomeScreen.classList.add('hidden'); // Ensure welcome screen is hidden
+
+            updateProgress();
+            displayQuestion();
+        }
+
+        /**
+         * Displays the current question and its options on the screen.
+         * Resets option button styles.
+         */
+        function displayQuestion() {
+            if (currentQuestionIndex >= questions.length) {
+                endGame(true); // Player won!
+                return;
+            }
+
+            const q = questions[currentQuestionIndex];
+            questionText.textContent = q.question;
+            currentQuestionNumberSpan.textContent = `Question ${currentQuestionIndex + 1}`;
+            currentWinningsSpan.textContent = `FAKE $RISE ${currentWinnings.toLocaleString()}`;
+
+            optionButtons.forEach(button => {
+                const optionKey = button.dataset.option;
+                button.textContent = `${optionKey}: ${q.options[optionKey]}`;
+                button.classList.remove('correct', 'incorrect', 'selected', 'disabled');
+                button.style.display = 'flex'; // Ensure all options are visible
+                button.disabled = false; // Re-enable all buttons
+            });
+            selectedOption = null; // Clear any previously selected option
+
+            // Ensure lifelines are enabled when a new question is displayed
+            if (lifelines['50:50']) lifeline5050Button.disabled = false;
+            if (lifelines['Audience']) lifelineAudienceButton.disabled = false;
+            if (lifelines['Phone']) lifelinePhoneButton.disabled = false;
+
+            // Sound effect for question load (placeholder)
+            // console.log("Sound: block being processed / data flowing");
+        }
+
+        /**
+         * Handles the selection of an answer option.
+         * Highlights the selected option and then checks if it's correct after a delay.
+         * @param {HTMLButtonElement} button - The button element that was clicked.
+         */
+        function selectOption(button) {
+            if (!gameActive || selectedOption) return; // Prevent multiple selections or if game is inactive
+
+            // Remove selected class from previous selection if any
+            optionButtons.forEach(btn => btn.classList.remove('selected'));
+            
+            // Add selected class to the clicked button
+            button.classList.add('selected');
+            selectedOption = button.dataset.option;
+
+            // Disable all option buttons and lifeline buttons temporarily
+            optionButtons.forEach(btn => btn.disabled = true);
+            lifeline5050Button.disabled = true;
+            lifelineAudienceButton.disabled = true;
+            lifelinePhoneButton.disabled = true;
+
+            // Wait a moment for the selection to register visually before checking
+            setTimeout(() => {
+                checkAnswer(selectedOption);
+            }, 1000); // 1 second delay
+        }
+
+        /**
+         * Checks if the selected answer is correct.
+         * Updates winnings, displays feedback, and proceeds to the next question or ends the game.
+         * @param {string} chosenOption - The letter of the chosen option (A, B, C, D).
+         */
+        function checkAnswer(chosenOption) {
+            const q = questions[currentQuestionIndex];
+            const correct = chosenOption === q.answer;
+
+            // Apply visual feedback immediately
+            optionButtons.forEach(button => {
+                if (button.dataset.option === q.answer) {
+                    button.classList.add('correct');
+                } else if (button.dataset.option === chosenOption) {
+                    button.classList.add('incorrect');
+                }
+            });
+
+            // Delay for visual feedback, then proceed
+            setTimeout(() => {
+                if (correct) {
+                    currentWinnings = q.prize; // Update winnings to the current question's prize
+                    if (q.safeHaven) {
+                        lastSafeHavenWinnings = q.prize; // Update safe haven winnings
+                    }
+
+                    // Check for milestones (logic remains, but pop-up removed)
+                    if (q.milestone === "Liquidity Flywheel") {
+                        currentWinnings += Math.floor(currentWinnings * 0.1);
+                        currentWinningsSpan.textContent = `FAKE $RISE ${currentWinnings.toLocaleString()}`;
+                    } else if (q.milestone === "Big Block Unlocked") {
+                        // No visual change, just a conceptual milestone
+                    }
+
+                    currentQuestionIndex++;
+                    updateProgress();
+                    if (currentQuestionIndex < questions.length) {
+                        displayQuestion(); // Move to next question
+                    } else {
+                        endGame(true); // Player won all questions
+                    }
+                } else {
+                    // Incorrect answer: Winnings remain unchanged, proceed to next question
+                    currentQuestionIndex++;
+                    updateProgress();
+                    if (currentQuestionIndex < questions.length) {
+                        displayQuestion(); // Move to next question
+                    } else {
+                        // If they get the last question wrong, the game still ends (they don't win the million)
+                        endGame(false); // Game ends, but they keep their current winnings
+                    }
+                }
+            }, 2000); // 2 second delay to see the colored button
+        }
+
+        /**
+         * Ends the game based on whether the player won or lost.
+         * Displays the appropriate end screen and final winnings.
+         * @param {boolean} won - True if the player won, false otherwise.
+         */
+        function endGame(won) {
+            gameActive = false;
+            gamePlayScreen.classList.add('hidden');
+            gameEndScreen.classList.add('active');
+
+            let finalPrize = currentWinnings; // Final prize is whatever they accumulated
+
+            if (!won) {
+                // If the game ends because they got the last question wrong, or walked away before winning all
+                endScreenTitle.textContent = "Game Over!";
+                // Shortened message for better fit
+                endScreenMessage.textContent = "Your journey has concluded. Every transaction, even a failed one, strengthens the network!";
+            } else {
+                endScreenTitle.textContent = "Congratulations!";
+                endScreenMessage.textContent = "You've achieved the ultimate Proof of Knowledge! You are a Sunrise Layer 1 Millionaire and a true Interliquid Network Architect!";
+                // Sound effect: grand triumphant sunrise animation, shower of virtual $RISE tokens (placeholder)
+                // console.log("Sound: grand triumphant, virtual $RISE tokens");
+            }
+            finalWinningsSpan.textContent = `Final FAKE $RISE ${finalPrize.toLocaleString()}`;
+        }
+
+        /**
+         * Updates the progress bar based on the current question index.
+         */
+        function updateProgress() {
+            const progress = (currentQuestionIndex / questions.length) * 100;
+            progressBar.style.width = `${progress}%`;
+        }
+
+        /**
+         * Displays a custom message box.
+         * @param {string} title - The title of the message.
+         * @param {string} content - The content of the message.
+         * @param {function} onClose - Callback function when the message box is closed.
+         * @param {boolean} isConfirmation - If true, adds a "No, stay" button for confirmation.
+         * @param {string} customButtonText - Optional text for the close button.
+         */
+        function showMessageBox(title, content, onClose = () => {}, isConfirmation = false, customButtonText = "Got It!") {
+            messageTitle.textContent = title;
+            messageContent.textContent = content;
+
+            // Clear previous buttons
+            while (messageBoxCloseButton.previousElementSibling) {
+                messageBoxCloseButton.previousElementSibling.remove();
+            }
+
+            if (isConfirmation) {
+                const confirmButton = document.createElement('button');
+                confirmButton.textContent = "Yes, Walk Away";
+                confirmButton.className = "bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-300";
+                confirmButton.onclick = () => {
+                    hideMessageBox();
+                    onClose(); // Execute the original onClose logic (which ends the game)
+                };
+                messageBox.insertBefore(confirmButton, messageBoxCloseButton);
+
+                messageBoxCloseButton.textContent = "No, Stay";
+                messageBoxCloseButton.className = "bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-300";
+                messageBoxCloseButton.onclick = () => {
+                    hideMessageBox();
+                    // Do nothing, stay in game
+                };
+            } else {
+                messageBoxCloseButton.textContent = customButtonText; // Use custom text here
+                messageBoxCloseButton.className = "bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-300";
+                messageBoxCloseButton.onclick = () => {
+                    hideMessageBox();
+                    onClose();
+                };
+            }
+
+            messageBox.classList.add('active');
+        }
+
+        /**
+         * Hides the custom message box.
+         */
+        function hideMessageBox() {
+            messageBox.classList.remove('active');
+            // Re-enable option buttons after message box is closed (if not game over)
+            if (gameActive) {
+                optionButtons.forEach(btn => btn.disabled = false);
+                // Re-enable lifelines only if they haven't been used
+                if (lifelines['50:50']) lifeline5050Button.disabled = false;
+                if (lifelines['Audience']) lifelineAudienceButton.disabled = false;
+                if (lifelines['Phone']) lifelinePhoneButton.disabled = false;
+            }
+        }
+
+        /**
+         * Uses a lifeline.
+         * @param {string} lifelineType - The type of lifeline to use ('50:50', 'Audience', 'Phone').
+         */
+        function useLifeline(lifelineType) {
+            if (!gameActive || !lifelines[lifelineType] || selectedOption) return; // Prevent use if game inactive, lifeline used, or option already selected
+
+            lifelines[lifelineType] = false; // Mark lifeline as used
+            document.getElementById(`lifeline${lifelineType.replace(':', '')}`).classList.add('disabled');
+
+            const q = questions[currentQuestionIndex];
+            const correctOption = q.answer;
+            const allOptions = ['A', 'B', 'C', 'D'];
+
+            // Disable all options and other lifelines temporarily while lifeline message is up
+            optionButtons.forEach(btn => btn.disabled = true);
+            lifeline5050Button.disabled = true;
+            lifelineAudienceButton.disabled = true;
+            lifelinePhoneButton.disabled = true;
+
+            switch (lifelineType) {
+                case '50:50':
+                    // "Erasure Code Assist"
+                    let incorrectOptions = allOptions.filter(opt => opt !== correctOption);
+                    let optionsToRemove = [];
+                    while (optionsToRemove.length < 2) {
+                        const randomIndex = Math.floor(Math.random() * incorrectOptions.length);
+                        optionsToRemove.push(incorrectOptions.splice(randomIndex, 1)[0]);
+                    }
+
+                    optionButtons.forEach(button => {
+                        if (optionsToRemove.includes(button.dataset.option)) {
+                            button.classList.add('disabled');
+                            button.style.display = 'none'; // Hide the removed options
+                        }
+                    });
+                    // Re-enable only the remaining options after the lifeline is used
+                    optionButtons.forEach(btn => {
+                        if (!btn.classList.contains('disabled')) {
+                            btn.disabled = false;
+                        }
+                    });
+                    // Re-enable other non-used lifelines
+                    if (lifelines['Audience']) lifelineAudienceButton.disabled = false;
+                    if (lifelines['Phone']) lifelinePhoneButton.disabled = false;
+                    break;
+
+                case 'Audience':
+                    // "Consult the Sunrise Community"
+                    const audienceCorrectAnswer = q.options[correctOption];
+                    showMessageBox("Consult the Sunrise Community", `The Sunrise Community suggests: The correct answer is ${correctOption}: ${audienceCorrectAnswer}.`, () => {
+                        // Highlight the correct answer on the main board after the message is closed
+                        optionButtons.forEach(button => {
+                            if (button.dataset.option === correctOption) {
+                                button.classList.add('correct'); // Highlight in green
+                            }
+                            button.disabled = false; // Re-enable all options
+                        });
+                        // Re-enable other non-used lifelines
+                        if (lifelines['50:50']) lifeline5050Button.disabled = false;
+                        if (lifelines['Phone']) lifelinePhoneButton.disabled = false;
+                    }, false, "Sunrise Community thinks answer is in green box"); // Pass custom button text
+                    break;
+
+                case 'Phone':
+                    // "Call a Core Contributor"
+                    const isTechnical = ["Proof of Liquidity", "DA", "off-chain blobs", "throughput", "shards", "modularity"].some(keyword => q.question.includes(keyword));
+                    let hintMessage = "";
+                    if (isTechnical) {
+                        hintMessage = `You've reached Yu Kimura, our CEO & CTO. My analysis suggests option [${q.answer}] based on the foundational principles of Proof of Liquidity and efficient data handling.`;
+                    } else {
+                        hintMessage = `You've connected with Takeru Shimojima, our COO & CFO. From a strategic perspective, [${q.answer}] aligns best with our vision for Interliquid Networks and enterprise adoption.`;
+                    }
+                    showMessageBox("Call a Core Contributor", hintMessage, () => {
+                        // Highlight the correct answer on the main board after the message is closed
+                        optionButtons.forEach(button => {
+                            if (button.dataset.option === correctOption) {
+                                button.classList.add('correct'); // Highlight in green
+                            }
+                            button.disabled = false; // Re-enable all options
+                        });
+                        // Re-enable other non-used lifelines
+                        if (lifelines['50:50']) lifeline5050Button.disabled = false;
+                        if (lifelines['Audience']) lifelineAudienceButton.disabled = false;
+                    }, false, "Haru thinks answer is in the green box"); // Pass custom button text
+                    break;
+            }
+        }
+
+        /**
+         * Shares the game result on Twitter.
+         */
+        function shareOnTwitter() {
+            const tweetText = encodeURIComponent(`I just became a Sunrise Layer 1 Millionaire with FAKE $RISE ${currentWinnings.toLocaleString()}! Play "Who Wants to Be a Sunrise Layer 1 Millionaire?" and test your blockchain knowledge! @miyulux`);
+            const twitterUrl = `https://twitter.com/intent/tweet?text=${tweetText}`;
+            window.open(twitterUrl, '_blank');
+        }
+
+        // Initial setup on window load
+        window.onload = function() {
+            // Display welcome screen initially
+            welcomeScreen.classList.remove('hidden');
+            gamePlayScreen.classList.add('hidden');
+            gameEndScreen.classList.add('hidden');
+            messageBox.classList.remove('active'); // Ensure message box is hidden
+        };
+    </script>
+</body>
+</html>
