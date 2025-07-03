@@ -18,7 +18,7 @@
             margin: 0;
             padding: 20px;
             box-sizing: border-box;
-            color: #333;
+            color: #333; /* Default body text color */
         }
         .game-container {
             background-color: #FFFFFF; /* Changed to solid white for full opacity */
@@ -59,7 +59,7 @@
         .question-text {
             font-size: 1.6rem;
             font-weight: 600;
-            color: #2c5282;
+            color: #1a202c !important; /* Forced dark color */
             line-height: 1.4;
         }
         .options-grid {
@@ -75,7 +75,7 @@
         }
         .option-button {
             background-color: #4299e1; /* Blue */
-            color: white;
+            color: white !important; /* Forced white color */
             padding: 15px 20px;
             border-radius: 10px;
             font-size: 1.1rem;
@@ -122,7 +122,7 @@
         }
         .lifeline-button {
             background-color: #ecc94b; /* Yellow */
-            color: #333;
+            color: #1a202c !important; /* Forced dark color */
             padding: 12px 20px;
             border-radius: 10px;
             font-size: 1rem;
@@ -152,7 +152,7 @@
             margin-bottom: 20px;
             font-size: 1.2rem;
             font-weight: 600;
-            color: #2c5282;
+            color: #1a202c !important; /* Forced dark color */
             padding: 10px 0;
             border-bottom: 2px solid #edf2f7;
         }
@@ -208,7 +208,7 @@
         }
         .message-box p {
             font-size: 1.1rem;
-            color: #4a5568;
+            color: #1a202c !important; /* Forced dark color */
             line-height: 1.5;
             white-space: pre-wrap; /* Ensures newlines are respected and text wraps */
             overflow-y: auto; /* Adds scroll if content is too long */
@@ -234,7 +234,7 @@
 
         /* Game Over/Win Screen (New Independent Container) */
         .game-end-screen {
-            background-color: rgba(255, 255, 255, 0.98);
+            background-color: #FFFFFF; /* Solid white background */
             border-radius: 20px;
             padding: 40px; /* Generous padding */
             box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
@@ -274,7 +274,7 @@
         .game-end-screen h2 {
             font-size: 2.5rem; /* Restored larger font size */
             font-weight: 700;
-            color: #FF6347;
+            color: #FF6347 !important; /* Forced color */
             text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.1);
             word-break: break-word; 
             line-height: 1.2;
@@ -283,7 +283,7 @@
         }
         .game-end-screen p {
             font-size: 1.5rem; /* Restored larger font size */
-            color: #2c5282;
+            color: #1a202c !important; /* Forced dark color */
             line-height: 1.6; 
             word-break: break-word;
             margin-bottom: 20px; /* Consistent spacing */
@@ -292,7 +292,7 @@
         .game-end-screen .final-winnings {
             font-size: 2.5rem; /* Restored larger font size */
             font-weight: 700;
-            color: #48bb78;
+            color: #48bb78 !important; /* Forced color */
             margin-top: 20px; /* Spacing from message */
             margin-bottom: 30px; /* Spacing before buttons */
             word-break: break-word;
@@ -347,6 +347,30 @@
             object-fit: contain;
         }
 
+        .disclaimer-text {
+            color: #000000 !important; /* Forced black color for the text */
+            font-size: 0.85rem;
+            margin-top: 40px; /* Increased margin-top for space between buttons and text */
+            text-align: center;
+            line-height: 1.4;
+            max-width: 80%; /* Constrain width */
+            margin-left: auto;
+            margin-right: auto;
+            position: relative; /* Changed to relative to flow with content */
+            bottom: auto; /* Remove fixed bottom positioning */
+            left: auto; /* Remove fixed left positioning */
+            transform: none; /* Remove transform */
+            z-index: 10; /* Ensure it's above other elements if needed */
+        }
+        .disclaimer-text a {
+            color: #4299e1; /* Link color */
+            text-decoration: underline;
+        }
+        .disclaimer-text a:hover {
+            color: #3182ce;
+        }
+
+
         @media (max-width: 768px) {
             .haru-mascot {
                 width: 70px; /* Smaller size for mobile */
@@ -372,6 +396,10 @@
             .game-end-screen button {
                 font-size: 1.1rem;
                 padding: 12px 25px;
+            }
+            .disclaimer-text {
+                font-size: 0.75rem; /* Smaller font size on mobile */
+                margin-top: 20px; /* Adjusted for mobile */
             }
         }
 
@@ -399,7 +427,7 @@
         }
     </style>
 </head>
-<body class="antialiased">
+<body>
     <div id="gameContainer" class="game-container">
         <h1 class="header">Who Wants to Be a<br>Sunrise Layer 1 Millionaire?</h1>
 
@@ -420,11 +448,11 @@
                 <p id="questionText" class="question-text">Loading question...</p>
                 <!-- Left Mascot -->
                 <div class="left-mascot" id="leftMascot">
-                    <img src="https://github.com/ShrimpieDev/derine/blob/main/Untitled%20design%20(59).png?raw=true" alt="Left Mascot">
+                    <img src="https://github.com/ShrimpieDev/derine/blob/main/Untitled%20design%20(59).png?raw=true" alt="Left Mascot" loading="lazy" onerror="this.onerror=null;this.src='https://placehold.co/70x70/000000/FFFFFF?text=Left';">
                 </div>
                 <!-- Haru Mascot -->
                 <div class="haru-mascot" id="haruMascot">
-                    <img src="https://github.com/ShrimpieDev/derine/blob/main/Untitled%20design%20(57).png?raw=true" alt="Haru Mascot">
+                    <img src="https://github.com/ShrimpieDev/derine/blob/main/Untitled%20design%20(57).png?raw=true" alt="Haru Mascot" loading="lazy" onerror="this.onerror=null;this.src='https://placehold.co/100x100/000000/FFFFFF?text=Haru';">
                 </div>
             </div>
 
@@ -452,6 +480,10 @@
 
             <div class="progress-bar-container">
                 <div id="progressBar" class="progress-bar"></div>
+            </div>
+            <!-- Disclaimer Text - Moved inside game-container -->
+            <div class="disclaimer-text">
+                This question and answer were entirely created by the community (<a href="https://twitter.com/miyulux" target="_blank">@miyulux</a>) and are not a product of, or affiliated with, the Sunrise Layer 1 team.
             </div>
         </div>
 
@@ -521,12 +553,12 @@
         // Game Data: Questions and Prize Ladder (Truncated to 8 questions)
         const questions = [
             {
-                question: "What is the primary purpose of Sunrise Layer in the modular blockchain ecosystem?",
+                question: "What is the primary problem Sunrise Layer aims to address in the blockchain ecosystem?",
                 options: {
-                    A: "To serve as a new Layer 1 blockchain for general-purpose dApps.",
-                    B: "To provide a highly scalable, gasless, and modular Data Availability (DA) layer.",
-                    C: "To function as a decentralized exchange (DEX) for cross-chain swaps.",
-                    D: "To create a new consensus mechanism for Proof of Work (PoW) networks."
+                    A: "Lack of centralized control and regulation.",
+                    B: "Liquidity fragmentation and blockchain scalability.",
+                    C: "High energy consumption of Proof of Work (PoW) blockchains.",
+                    D: "Absence of NFTs and DeFi applications."
                 },
                 answer: "B",
                 prize: 5, // Adjusted prize
@@ -537,12 +569,12 @@
                 }
             },
             {
-                question: "Which term describes Sunrise Layer's unique consensus mechanism, designed to incentivize liquidity provision?",
+                question: "What unique consensus mechanism does Sunrise Layer utilize to secure its network?",
                 options: {
-                    A: "Proof of Stake (PoS)",
-                    B: "Proof of Work (PoW)",
+                    A: "Proof of Work (PoW)",
+                    B: "Proof of Stake (PoS)",
                     C: "Proof of Liquidity (PoL)",
-                    D: "Proof of Authority (PoA)"
+                    D: "Delegated Proof of Stake (DPoS)"
                 },
                 answer: "C",
                 prize: 10, // Adjusted prize
@@ -553,12 +585,12 @@
                 }
             },
             {
-                question: "What is the main benefit of Sunrise Layer's 'gasless' transaction model for users and developers?",
+                question: "Who are the two co-founders of Sunrise Layer mentioned in the research report?",
                 options: {
-                    A: "It allows transactions to be processed instantly without any block confirmation.",
-                    B: "It eliminates the need for users to pay transaction fees in native cryptocurrency.",
-                    C: "To enable direct peer-to-peer transactions without involving the blockchain.",
-                    D: "It provides a private network where transactions are not publicly visible."
+                    A: "Christopher Lee and Diogo Ferreira",
+                    B: "Yu Kimura and Takeru Shimojima",
+                    C: "Ugo Dike-Hart and Kavin Mohan",
+                    D: "Sena Omura and Kyohei Ito"
                 },
                 answer: "B",
                 prize: 20, // Adjusted prize
@@ -569,12 +601,12 @@
                 }
             },
             {
-                question: "Sunrise Layer aims to be a foundational component for what type of blockchain architecture?",
+                question: "How much capital did Sunrise Layer successfully raise in its seed funding round?",
                 options: {
-                    A: "Monolithic blockchains",
-                    B: "Sidechains",
-                    C: "Modular blockchains",
-                    D: "Centralized ledgers"
+                    A: "$1 million",
+                    B: "$5 million",
+                    C: "$3 million",
+                    D: "$10 million"
                 },
                 answer: "C",
                 prize: 30, // Adjusted prize
@@ -585,52 +617,20 @@
                 }
             },
             {
-                question: "What is the name of Sunrise Layer's sister project, which functions as a strategic yield hub within the ecosystem?",
+                question: "Compared to other Data Availability (DA) layers like Celestia, what is a unique advantage of Sunrise Layer's consensus model?",
                 options: {
-                    A: "Moonbeam",
-                    B: "Gluon",
-                    C: "Polygon",
-                    D: "Avalanche"
+                    A: "It relies on traditional Proof of Work (PoW) for maximum security.",
+                    B: "It uses a Data Availability Committee (DAC) for faster finality.",
+                    C: "It directly links network security to liquidity provision through Proof of Liquidity (PoL).",
+                    D: "It requires all data to be stored on-chain for full transparency."
                 },
-                answer: "B",
+                answer: "C",
                 prize: 60, // Adjusted prize
                 safeHaven: true, // First Safe Haven
                 milestone: "Liquidity Flywheel",
                 hint: {
                     technical: "This sister project is designed to enhance the economic incentives and utility within the Sunrise ecosystem, particularly for liquidity providers.",
                     business: "It's a key part of our ecosystem strategy to create a robust and interconnected network, offering additional value to our community and partners."
-                }
-            },
-            {
-                question: "Which decentralized storage solutions does Sunrise Layer primarily utilize for storing its off-chain data blobs?",
-                options: {
-                    A: "Google Drive and Dropbox",
-                    B: "AWS S3 and Azure Blob Storage",
-                    C: "IPFS and Arweave",
-                    D: "OneDrive and iCloud"
-                },
-                answer: "C",
-                prize: 120, // Adjusted prize
-                safeHaven: false,
-                hint: {
-                    technical: "For decentralized and persistent storage of large data blobs, we integrate with solutions that offer censorship resistance and data permanence.",
-                    business: "Our choice of storage solutions reflects our commitment to decentralization and ensuring the long-term integrity and availability of data for our network."
-                }
-            },
-            {
-                question: "What is the approximate throughput (data processing speed) that Sunrise Layer claims to achieve, enabling 'big block L2s'?",
-                options: {
-                    A: "0.5 MB/s",
-                    B: "1 MB/s",
-                    C: "5+ MB/s",
-                    D: "100+ MB/s"
-                },
-                answer: "C",
-                prize: 240, // Adjusted prize
-                safeHaven: false,
-                hint: {
-                    technical: "Our architecture is optimized to handle a significant volume of data, allowing for larger block sizes and higher transaction capacity on connected Layer 2s.",
-                    business: "This high throughput is crucial for supporting enterprise-grade applications and ensuring that our network can meet the demands of future blockchain adoption."
                 }
             },
             {
@@ -642,6 +642,38 @@
                     D: "Leading a major Layer 2 scaling solution."
                 },
                 answer: "B",
+                prize: 120, // Adjusted prize
+                safeHaven: false,
+                hint: {
+                    technical: "For decentralized and persistent storage of large data blobs, we integrate with solutions that offer censorship resistance and data permanence.",
+                    business: "Our choice of storage solutions reflects our commitment to decentralization and ensuring the long-term integrity and availability of data for our network."
+                }
+            },
+            {
+                question: "What is the name of the service Sunrise offers for enterprises to build custom blockchains?",
+                options: {
+                    A: "SunBuild",
+                    B: "MyLayer",
+                    C: "EnterpriseChain",
+                    D: "BlockBiz"
+                },
+                answer: "B",
+                prize: 240, // Adjusted prize
+                safeHaven: false,
+                hint: {
+                    technical: "Our architecture is optimized to handle a significant volume of data, allowing for larger block sizes and higher transaction capacity on connected Layer 2s.",
+                    business: "This high throughput is crucial for supporting enterprise-grade applications and ensuring that our network can meet the demands of future blockchain adoption."
+                }
+            },
+            {
+                question: "What is the native transferable token of the Sunrise network?",
+                options: {
+                    A: "$GLU",
+                    B: "$vRISE",
+                    C: "$RISE",
+                    D: "$TIA"
+                },
+                answer: "C",
                 prize: 515, // Adjusted prize
                 safeHaven: false,
                 hint: {
@@ -1016,7 +1048,7 @@
          * Shares the game result on Twitter.
          */
         function shareOnTwitter() {
-            const tweetText = encodeURIComponent(`I just became a Sunrise Layer 1 Millionaire with FAKE $RISE ${currentWinnings.toLocaleString()}! Play "Who Wants to Be a Sunrise Layer 1 Millionaire?" and test your blockchain knowledge! @miyulux`);
+            const tweetText = encodeURIComponent(`I just became a @SunriseLayer Millionaire with my FAKE $RISE tokens ${currentWinnings.toLocaleString()}!\nPlay "Who Wants to Be a Sunrise Layer 1 Millionaire?" and test your blockchain knowledge!\nWith this game made by @miyulux`);
             const twitterUrl = `https://twitter.com/intent/tweet?text=${tweetText}`;
             window.open(twitterUrl, '_blank');
         }
