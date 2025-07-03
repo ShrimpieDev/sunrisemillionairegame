@@ -1048,7 +1048,7 @@
          * Shares the game result on Twitter.
          */
         function shareOnTwitter() {
-            const tweetText = encodeURIComponent(`I just became a @SunriseLayer Millionaire with my FAKE $RISE tokens ${currentWinnings.toLocaleString()}!\nPlay "Who Wants to Be a Sunrise Layer 1 Millionaire?" and test your blockchain knowledge!\nWith this game made by @miyulux`);
+            const tweetText = encodeURIComponent(`I just became a @SunriseLayer Millionaire with my FAKE $RISE tokens ${currentWinnings.toLocaleString()}!\nPlay "Who Wants to Be a Sunrise Layer 1 Millionaire?" and test your blockchain knowledge!\nWith this game made by @miyulux\nPlay now https://shrimpiedev.github.io/sunrisemillionairegame/ `);
             const twitterUrl = `https://twitter.com/intent/tweet?text=${tweetText}`;
             window.open(twitterUrl, '_blank');
         }
