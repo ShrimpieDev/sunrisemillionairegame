@@ -370,6 +370,29 @@
             color: #3182ce;
         }
 
+        .music-toggle-button {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: rgba(255, 255, 255, 0.7);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            z-index: 50; /* Ensure it's above other elements */
+            border: none; /* Remove default button border */
+        }
+        .music-toggle-button:hover {
+            background-color: rgba(255, 255, 255, 0.9);
+        }
+        .music-toggle-button svg {
+            color: #FF6347;
+        }
+
 
         @media (max-width: 768px) {
             .haru-mascot {
@@ -400,6 +423,16 @@
             .disclaimer-text {
                 font-size: 0.75rem; /* Smaller font size on mobile */
                 margin-top: 20px; /* Adjusted for mobile */
+            }
+            .music-toggle-button {
+                top: 10px;
+                right: 10px;
+                width: 30px;
+                height: 30px;
+            }
+            .music-toggle-button svg {
+                width: 18px;
+                height: 18px;
             }
         }
 
@@ -483,7 +516,7 @@
             </div>
             <!-- Disclaimer Text - Moved inside game-container -->
             <div class="disclaimer-text">
-                This question and answer were entirely created by the community (<a href="https://twitter.com/miyulux" target="_blank">@miyulux</a>) and are not a product of, or affiliated with, the Sunrise Layer 1 team.
+                This app were entirely created by the community (<a href="https://twitter.com/miyulux" target="_blank">@miyulux</a>), for fun and it's not a product of, or affiliated with, the Sunrise Layer 1 team.
             </div>
         </div>
 
@@ -507,6 +540,16 @@
             </div>
         </div>
     </div>
+    <!-- Background Music Audio Element -->
+    <audio id="backgroundMusic" loop>
+        <source src="https://github.com/ShrimpieDev/sunrisemillionairegame/blob/main/Millionaire%20Suspense%20-%20Sound.mp3?raw=true" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
+    <!-- Music Toggle Button -->
+    <button id="musicToggleButton" class="music-toggle-button">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-volume-2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M22.36 1.64a15 15 0 0 1 0 20.72"/></svg>
+    </button>
 
     <script>
         // Game Elements
@@ -537,6 +580,11 @@
         const finalWinningsSpan = document.getElementById('finalWinnings');
         const playAgainButton = document.getElementById('playAgainButton');
         const shareTwitterButton = document.getElementById('shareTwitterButton'); // Twitter share button
+
+        // Audio Elements
+        const backgroundMusic = document.getElementById('backgroundMusic');
+        const musicToggleButton = document.getElementById('musicToggleButton');
+        let isPlaying = false;
 
         // Game State Variables
         let currentQuestionIndex = 0;
@@ -695,6 +743,30 @@
         playAgainButton.addEventListener('click', resetGame);
         shareTwitterButton.addEventListener('click', shareOnTwitter); // Twitter share event listener
 
+        // Music toggle event listener
+        musicToggleButton.addEventListener('click', () => {
+            if (isPlaying) {
+                backgroundMusic.pause();
+                // Change icon to muted speaker
+                musicToggleButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-volume-x"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="22" x2="16" y1="9" y2="15"/><line x1="16" x2="22" y1="15" y2="9"/></svg>`;
+            } else {
+                backgroundMusic.play().catch(e => console.log("Music play prevented:", e)); // Add catch for play() promise
+                // Change icon to unmuted speaker
+                musicToggleButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-volume-2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M22.36 1.64a15 15 0 0 1 0 20.72"/></svg>`;
+            }
+            isPlaying = !isPlaying;
+        });
+
+        // Optional: Start music on first user interaction with the game itself (e.g., clicking Start Game)
+        startButton.addEventListener('click', () => {
+            if (!isPlaying) {
+                backgroundMusic.play().catch(e => console.log("Autoplay prevented:", e));
+                isPlaying = true;
+                musicToggleButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-volume-2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M22.36 1.64a15 15 0 0 1 0 20.72"/></svg>`;
+            }
+        });
+
+
         // Functions
 
         /**
@@ -710,8 +782,7 @@
             resetGame(); // Ensure a clean start
             displayQuestion();
             updateProgress();
-            // Play uplifting intro music (placeholder)
-            // console.log("Playing intro music...");
+            // Music will attempt to play via startButton listener
         }
 
         /**
